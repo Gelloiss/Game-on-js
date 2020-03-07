@@ -1,0 +1,42 @@
+#gameField {
+  margin: 20px;
+  border: 1px solid black; 
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gameItem {
+  height: 50px;
+  width: 50px;
+  border: 1px solid gray;
+  box-sizing: border-box;
+  margin: 10px;
+}
+
+.flexToNewString {
+  width: 100%;
+  height: 0;
+}
+
+.itemRed {
+  background: red;
+}
+
+.itemBlue {
+  background: blue;
+}
+
+.itemGreen {
+  background: green;
+}
+
+.itemYellow {
+  background: yellow;
+}
+
+.itemBlack {
+  background: black;
+}
