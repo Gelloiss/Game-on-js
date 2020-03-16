@@ -40,3 +40,7 @@
 .itemBlack {
   background: black;
 }
+
+hr {
+  width: 100%;
+}
