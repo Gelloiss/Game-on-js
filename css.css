@@ -8,12 +8,34 @@
   justify-content: center;
 }
 
+#colorSelection {
+  margin: 20px;
+  border: 1px solid black; 
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .gameItem {
   height: 50px;
   width: 50px;
   border: 1px solid gray;
   box-sizing: border-box;
   margin: 10px;
+}
+
+.colorSelector {
+  height: 50px;
+  width: 50px;
+  border: 1px solid gray;
+  box-sizing: border-box;
+  margin: 10px;
+}
+
+.colorSelected {
+  border: 4px solid black;
 }
 
 .flexToNewString {
