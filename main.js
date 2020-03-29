@@ -1,5 +1,5 @@
 const main = () => {
-  const allColors = ['itemRed', 'itemBlue', 'itemGreen', 'itemYellow', 'itemBlack']; //Все цвета
+  const allColors = ['itemRed', 'itemBlue', 'itemGreen', 'itemYellow', 'itemPurple', 'itemOrange', 'itemLime', 'itemBrown', 'itemTransparent']; //Все цвета
   let side = 3;
   let colors = 3;
   let colorSelected = allColors[getRandomInt(1, colors) - 1]; //Сгенирировали изначальный выбранный цвет
@@ -43,6 +43,21 @@ const main = () => {
       changeColorSelected(colorSelected); //Передаем элемент по которому нажали
     }
   }); //Клик по полю с выбором цвета
+
+  document.getElementById('noAnimationCheckbox').addEventListener('change', event => { //Клик по чекбоксу
+    const paintedGameItems = document.getElementsByClassName('gameItem'); //Получили нарисованные элементы
+    if (event.target.checked) { //Если активировали
+      for (let i = 0; i < paintedGameItems.length; i++) { //Добавили всем элементам класс
+        paintedGameItems[i].setAttribute('class', paintedGameItems[i].getAttribute('class') + ' itemNoAnimation');
+      }
+    }
+
+    else { //Если сняли галочку
+      for (let i = 0; i < paintedGameItems.length; i++) { //Убрали у всех элементов класс
+        paintedGameItems[i].setAttribute('class', paintedGameItems[i].getAttribute('class').split(' ')[0] + ' ' + paintedGameItems[i].getAttribute('class').split(' ')[1]);
+      }
+    }
+  });
 }
 
 

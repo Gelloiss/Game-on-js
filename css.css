@@ -168,9 +168,83 @@ p {
   }
 }
 
-.itemBlack {
-  background: black;
+.itemPurple {
+  background:   #8B008B;
+  box-shadow: 0 -15px 20px -15px #DDA0DD inset,
+              0 -15px 20px -15px #EE82EE inset,
+              0 -15px 20px -15px #DA70D6 inset;
+  animation: purpleAnimation 4s infinite alternate;
 }
+
+@keyframes purpleAnimation {
+  50% {
+    background: #FF00FF;
+    box-shadow: 0 -15px 20px -15px #8A2BE2 inset, 
+                0 -15px 20px -15px #9400D3 inset, 
+                0 -15px 20px -15px #9932CC inset;
+  }
+}
+
+.itemOrange {
+  background: #FF4500;
+  box-shadow: 0 -15px 20px -15px #FFA500 inset,
+              0 -15px 20px -15px #FF8C00 inset,
+              0 -15px 20px -15px #FF7F50 inset;
+  animation: orangeAnimation 4s infinite alternate;
+}
+
+@keyframes orangeAnimation {
+  50% {
+    background: #FFA500;
+    box-shadow: 0 -15px 20px -15px #FF7F50 inset, 
+                0 -15px 20px -15px #FF6347 inset, 
+                0 -15px 20px -15px #FFD700 inset;
+  }
+}
+
+.itemLime {
+  background: #00FF00;
+  box-shadow: 0 -15px 20px -15px #7FFF00 inset,
+              0 -15px 20px -15px #7CFC00 inset,
+              0 -15px 20px -15px #32CD32 inset;
+  animation: limeAnimation 4s infinite alternate;
+}
+
+@keyframes limeAnimation {
+  50% {
+    background: #ADFF2F;
+    box-shadow: 0 -15px 20px -15px #7CFC00 inset, 
+                0 -15px 20px -15px #7FFF00 inset, 
+                0 -15px 20px -15px #32CD32 inset;
+  }
+}
+
+.itemBrown {
+  background: #8B4513;
+  box-shadow: 0 -15px 20px -15px #CD853F inset,
+              0 -15px 20px -15px #A0522D inset,
+              0 -15px 20px -15px #BC8F8F inset;
+  animation: brownAnimation 4s infinite alternate;
+}
+
+@keyframes brownAnimation {
+  50% {
+    background: #A52A2A;
+    box-shadow: 0 -15px 20px -15px #BC8F8F inset, 
+                0 -15px 20px -15px #CD853F inset, 
+                0 -15px 20px -15px #A0522D inset;
+  }
+}
+
+.itemTransparent {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.itemNoAnimation {
+  box-shadow: none !important;
+  animation: none !important; 
+}
+
 
 hr {
   width: 100%;
