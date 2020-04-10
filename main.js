@@ -18,7 +18,7 @@ const main = () => {
   paintColorSelection(allColors, colors); //Русием панель для выбора цвета
   changeColorSelected(colorSelected); //Отмечаем выбранный цвет
 
-  document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span
+  document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
 
   document.getElementById('gameField').addEventListener('click', event => { //Словили клик по игровому полю
     const target = event.target;
@@ -30,13 +30,13 @@ const main = () => {
       if (tryStep) {
         //gameItems = tryStep;
         stepsCount--;
-        document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span
-        paintGameField(tryStep);
+        document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
+        paintGameField(tryStep); //Нарисовали поле
       }
     }
   }); //Клик по игровому полю
 
-  document.getElementById('colorSelection').addEventListener('click', event => { //Словили клик по элементу
+  document.getElementById('colorSelection').addEventListener('click', event => { //Словили клик по элементу переключения цвета
     const target = event.target;
     if (target.getAttribute('class')) { //Если это переключатель
       colorSelected = target.getAttribute('class').split(' ')[1];
@@ -93,6 +93,9 @@ const paintGameField = items => { //Функция для рисования п�
         class: 'gameItem ' + items[i][j],
         position: i + '|' + j,
       };
+      if (document.getElementById('noAnimationCheckbox').checked) { //Если режим без анимаций
+        itemConfigs.class += ' itemNoAnimation'; //Добавили класс без анимации 
+      }
       let div = document.createElement("div"); //Создаем div
       for (attribute in itemConfigs) { //Идем по всем аттрибутам
         div.setAttribute(attribute, itemConfigs[attribute]); //Просвоили аттрибут
