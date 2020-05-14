@@ -1,15 +1,10 @@
-const main = () => {
-  const allColors = ['itemRed', 'itemBlue', 'itemGreen', 'itemYellow', 'itemPurple', 'itemOrange', 'itemLime', 'itemBrown', 'itemTransparent']; //Все цвета
-  let side = 3;
-  let colors = 3;
+const main = () => {  
+  let level = 0;
+  let score = 0;
+  let side = allLevels[level].side;
+  let colors = allLevels[level].colors; //Получаем настройки уровня
   let colorSelected = allColors[getRandomInt(1, colors) - 1]; //Сгенирировали изначальный выбранный цвет
-  let GET = getGET(); //Получили GET переменные
-
-  if (GET['side'] && GET['colors']) { //Если есть нужные переменные
-    side = GET['side'];
-    colors = GET['colors'];
-  }
-
+  
   let gameItems = createGameField(side, colors, allColors); //Создали поле
   let stepsCount = getStepsCount(gameItems); //Получили кол-во ходов
 
@@ -18,6 +13,7 @@ const main = () => {
   paintColorSelection(allColors, colors); //Русием панель для выбора цвета
   changeColorSelected(colorSelected); //Отмечаем выбранный цвет
 
+  document.getElementById('htmlLevelNumber').innerHTML = level + 1; //Вывели в span номер уровня
   document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
 
   document.getElementById('gameField').addEventListener('click', event => { //Словили клик по игровому полю
@@ -44,17 +40,32 @@ const main = () => {
     }
   }); //Клик по полю с выбором цвета
 
-  document.getElementById('noAnimationCheckbox').addEventListener('change', event => { //Клик по чекбоксу
+  document.getElementById('noAnimationCheckbox').addEventListener('change', event => { //Клик по чекбоксу переключения анимаций
     const paintedGameItems = document.getElementsByClassName('gameItem'); //Получили нарисованные элементы
+    const colorSelectors = document.getElementsByClassName('colorSelector'); //Получили элементы выбора цвета
     if (event.target.checked) { //Если активировали
-      for (let i = 0; i < paintedGameItems.length; i++) { //Добавили всем элементам класс
+      for (let i = 0; i < paintedGameItems.length; i++) { //Добавили всем элементам игрового поля класс
         paintedGameItems[i].setAttribute('class', paintedGameItems[i].getAttribute('class') + ' itemNoAnimation');
+      }
+      for (let i =0; i< colorSelectors.length; i++) { //Добавили элементам выбора цвета класс без анимации
+        colorSelectors[i].setAttribute('class', colorSelectors[i].getAttribute('class') + ' itemNoAnimation');
       }
     }
 
     else { //Если сняли галочку
       for (let i = 0; i < paintedGameItems.length; i++) { //Убрали у всех элементов класс
         paintedGameItems[i].setAttribute('class', paintedGameItems[i].getAttribute('class').split(' ')[0] + ' ' + paintedGameItems[i].getAttribute('class').split(' ')[1]);
+      }
+      for (let i = 0; i < colorSelectors.length; i++) { //Убираем класс "без анимации" у элементов выбора цвета
+        const colorSelectorsClass = colorSelectors[i].getAttribute('class').split(' '); //Получили все классы элемента
+        let attribute = ''; //Классы которые будем добавлять элементу
+        for (j = 0; j < colorSelectorsClass.length; j++) { //Проходим по всем классам
+          if (colorSelectorsClass[j] != 'itemNoAnimation') { //Если это не класс, который убирает анимацию
+            attribute += ' ' + colorSelectorsClass[j]; //Добавляем этот класс
+          }
+        }
+        attribute = attribute.substr(1);
+        colorSelectors[i].setAttribute('class', attribute); //Добавили классы элементу
       }
     }
   });
@@ -114,7 +125,12 @@ const paintGameField = items => { //Функция для рисования п�
 const paintColorSelection = (colors, count) => { //Рисуем панель выбора цвета
   let div = document.createElement("div"); //Создаем div
   for (let i = 0; i < count; i++) {
-    div.setAttribute('class', 'colorSelector ' + colors[i]); //Просвоили классы
+    if (document.getElementById('noAnimationCheckbox').checked) { //Если режим без анимации
+      div.setAttribute('class', 'colorSelector ' + colors[i] + ' itemNoAnimation'); //Просвоили классы
+    }
+    else {
+      div.setAttribute('class', 'colorSelector ' + colors[i]); //Просвоили классы
+    }
     document.getElementById('colorSelection').appendChild(div); //Добавили div в html
     div = document.createElement("div"); //Обнуляем div
   }
@@ -238,11 +254,15 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
 
 
 const changeColorSelected = item => {
-  const div = document.getElementsByClassName("colorSelected");
-  for (let i = 0; i < div.length; i++) {
-    div[i].setAttribute('class', 'colorSelector ' + div[i].getAttribute('class').split(' ')[1]); //Убрали старый выбранный цвет
+  const colorSelected = document.getElementsByClassName("colorSelected"); //Получили выбранный цвет
+  if (colorSelected.length > 0) { //Если такой есть
+    colorSelected[0].setAttribute('class', colorSelected[0].getAttribute('class').replace('colorSelected', '')); //Убрали старый выбранный цвет
   }
-  document.getElementsByClassName("colorSelector " + item)[0].setAttribute('class', 'colorSelector ' + item + ' colorSelected'); //Пометили цвет выбранным
+  let attribute = 'colorSelector ' + item + ' colorSelected';
+  if (document.getElementById('noAnimationCheckbox').checked) { //Если режим без анимации
+    attribute = 'colorSelector ' + item + ' itemNoAnimation colorSelected';
+  }
+  document.getElementsByClassName("colorSelector " + item)[0].setAttribute('class', attribute); //Пометили цвет выбранным
 }
 
 
