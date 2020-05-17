@@ -15,19 +15,25 @@ const main = () => {
 
   document.getElementById('htmlLevelNumber').innerHTML = level + 1; //Вывели в span номер уровня
   document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
+  document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
+
+  let timeStart = new Date(); //Время старта уровня
+  let levelTimerId = setInterval(levelTimer, 1000, timeStart);
 
   document.getElementById('gameField').addEventListener('click', event => { //Словили клик по игровому полю
     const target = event.target;
     if (target.getAttribute('class')) { //Если есть класс
-      const row = target.getAttribute('position').split('|')[0];
-      const column = target.getAttribute('position').split('|')[1];
-      const color = target.getAttribute('class').split(' ')[1];
+      const row = target.getAttribute('position').split('|')[0]; //Строка элемента по которому был клик
+      const column = target.getAttribute('position').split('|')[1]; //Столбец элемента по которому был клик
+      const color = target.getAttribute('class').split(' ')[1]; //Цвет элемента по которому был клик
       const tryStep = step(gameItems, row, column, color, colorSelected); //Делаем шаг
       if (tryStep) {
         //gameItems = tryStep;
         stepsCount--;
         document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
-        paintGameField(tryStep); //Нарисовали поле
+        score += (level + 1) * tryStep.countReplace; //Пересчитали кол-во очков
+        document.getElementById('htmlScoresCount').innerHTML = score; //Вывели кол-во очков
+        paintGameField(tryStep.items); //Нарисовали поле
       }
     }
   }); //Клик по игровому полю
@@ -162,7 +168,7 @@ const getStepsCount = items => {
   for (let i = 0; i < count; i++) { //Идем по всем ячейкам
     for (let j = 0; j < count; j++) {
       if (newItems[i][j] != mainColor) { //Если ячейка не основного цвета, заменяем и считаем шаги
-        newItems = step(newItems, i, j, newItems[i][j], mainColor);
+        newItems = step(newItems, i, j, newItems[i][j], mainColor).items;
         stepsCount++;
       }
     }
@@ -173,18 +179,19 @@ const getStepsCount = items => {
 
 
 
-const step = (items, row, column, colorOriginal, color, stack = []) => {
+const step = (items, row, column, colorOriginal, color, stack = [], countReplace = 0) => {
   /*
   Идем от стартовой ячейки во все стороны заменяя все возможные ячейки. 
   Все замененные ячейки сохраняем в массив.
   Достаем последний элемент массива и кидаем в эту функцию в качестве главного элемента, из массива удаляем 
   Продолжаем пока массив не будет пуст
+  Записываем кол-во заемененных клеток
   */
 
   row = parseInt(row, 10);
   column = parseInt(column, 10); //Минус баг о_0
 
-  if (color == colorOriginal) { //Если заменяем цвет на такой же, возвращаем 0
+  if (color == colorOriginal) { //Если заменяем цвет на такой же, возвращаем undefined
     return undefined;
   }
 
@@ -196,6 +203,7 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
     i++;
     if ((row - i + 1 > 0) && (items[row - i][column] === colorOriginal)) { //Если не верхняя ячейка и нужный цвет        
       items[row - i][column] = color; //Заменяем цвет
+      countReplace++; //Увеличиваем количество замененных полей
       stack.push({'column': column, 'row': row - i}); //Добавляем ячейку в стек для дальнейшних проверок
     }
     else { //Иначе выходим с цикла
@@ -208,6 +216,7 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
     i++;
     if ((row + i < items.length) && (items[i + row][column] === colorOriginal)) { //Если есть ячейки ниже //Если ее цвет как у заменяемой
       items[row + i][column] = color; //Заменяем цвет
+      countReplace++; //Увеличиваем количество замененных полей
       stack.push({'column': column, 'row': row + i}); //Добавляем ячейку в стек для дальнейшних проверок
     }
     else { //Иначе выходим с цикла
@@ -220,6 +229,7 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
     i++;
     if ((column - i + 1 > 0) && (items[row][column - i] === colorOriginal)) { //Если не левая ячейка и нужный цвет
       items[row][column - i] = color; //Заменяем цвет
+      countReplace++; //Увеличиваем количество замененных полей
       stack.push({'column': column - i, 'row': row}); //Добавляем ячейку в стек для дальнейшних проверок
     }
     else { //Иначе выходим с цикла
@@ -233,6 +243,7 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
     if ((column + i < items.length) && (items[row][column + i] === colorOriginal)) { //Если есть ячейки справа
        //Нужного цвета
       items[row][column + i] = color; //Заменяем цвет
+      countReplace++; //Увеличиваем количество замененных полей
       stack.push({'column': column + i, 'row': row}); //Добавляем ячейку в стек для дальнейшних проверок
     }
     else { //Иначе выходим с цикла
@@ -243,11 +254,17 @@ const step = (items, row, column, colorOriginal, color, stack = []) => {
 
   if (stack.length != 0) { //Если массив не пустой
     const temp = stack.pop(); //Берем последний элемент
-    return step(items, temp.row, temp.column, colorOriginal, color, stack); //Заменяем от "последнего" элемента
+    return step(items, temp.row, temp.column, colorOriginal, color, stack, countReplace); //Заменяем от "последнего" элемента
   }
 
   else {
-    return items; //Когда стек пуст, возвращаем новый массив
+    //score += countReplace * level; //Добавили очки
+    //document.getElementById("htmlScoresCount").innerHTML = score; //Перезаписали кол-во очков
+    const stepResult = { //Возвращаем объект с новым полем и кол-вом замен за этот ход
+      'items': items,
+      'countReplace': countReplace
+    };
+    return stepResult; //Когда стек пуст, возвращаем новый массив
   }
 }
 
@@ -263,6 +280,17 @@ const changeColorSelected = item => {
     attribute = 'colorSelector ' + item + ' itemNoAnimation colorSelected';
   }
   document.getElementsByClassName("colorSelector " + item)[0].setAttribute('class', attribute); //Пометили цвет выбранным
+}
+
+
+
+const levelTimer = timeStart => { //Функция для подсчета и вывода времени нахождения на уровне
+  const diffDate = Math.floor((new Date() - timeStart) / 1000); //Получили разницу времени сейчас и от старта уровня в секундках
+  let minutes = 0;
+  let seconds = 0; //Кол-во минут и секунд которые прошли
+  minutes = Math.floor(diffDate / 60); //Получаем кол-во минут, беря целую чать от деления секунды/60
+  seconds = diffDate % 60; //Остаток от деления - секунды
+  document.getElementById('htmlLevelTimer').innerHTML = minutes + ':' + seconds; //Вывели таймер на странциу
 }
 
 
