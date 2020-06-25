@@ -1,24 +1,15 @@
 const main = () => {  
   let level = 0;
   let score = 0;
-  let side = allLevels[level].side;
-  let colors = allLevels[level].colors; //Получаем настройки уровня
-  let colorSelected = allColors[getRandomInt(1, colors) - 1]; //Сгенирировали изначальный выбранный цвет
-  
-  let gameItems = createGameField(side, colors, allColors); //Создали поле
-  let stepsCount = getStepsCount(gameItems); //Получили кол-во ходов
+  let levelInfo = startLevel(level, allLevels, allColors); //Начали первый уроверь и получили элементы поля
+  let gameItems = levelInfo.gameItems; //Получили элементы уровня
+  let stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
+  let colorSelected = levelInfo.colorSelected; //Получили выбранный цвет для игры
+  let timeStart = levelInfo.timeStart; //Время начала уровня
+  let levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
 
-  paintGameField(gameItems); //Нарисовали поле
 
-  paintColorSelection(allColors, colors); //Русием панель для выбора цвета
-  changeColorSelected(colorSelected); //Отмечаем выбранный цвет
-
-  document.getElementById('htmlLevelNumber').innerHTML = level + 1; //Вывели в span номер уровня
-  document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
   document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
-
-  let timeStart = new Date(); //Время старта уровня
-  let levelTimerId = setInterval(levelTimer, 1000, timeStart);
 
   document.getElementById('gameField').addEventListener('click', event => { //Словили клик по игровому полю
     const target = event.target;
@@ -29,11 +20,25 @@ const main = () => {
       const tryStep = step(gameItems, row, column, color, colorSelected); //Делаем шаг
       if (tryStep) {
         //gameItems = tryStep;
-        stepsCount--;
+        stepsCount--; //Уменьшаем кол-во оставшихся ходов
         document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
         score += (level + 1) * tryStep.countReplace; //Пересчитали кол-во очков
         document.getElementById('htmlScoresCount').innerHTML = score; //Вывели кол-во очков
         paintGameField(tryStep.items); //Нарисовали поле
+        let countColorsOnLevel = getCountColorsOnLevel(gameItems); //Получили оставшееся количество цветов на уровне
+        if (countColorsOnLevel == 1) { //Если остался только один цвет (уровень пройден)
+          level++; //Увеличиваем уровень
+          score = score - Math.floor((new Date() - timeStart) / 3 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
+          clearInterval(levelTimerId); //Остановили таймер уровня
+          levelInfo = startLevel(level, allLevels, allColors); //Начали начинаем новый уровень
+          gameItems = levelInfo.gameItems; //Получили элементы уровня
+          stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
+          colorSelected = levelInfo.colorSelected; //Выбранный цвет для игры
+          timeStart = levelInfo.timeStart; //Время начала уровня
+          levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
+
+          document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
+        }
       }
     }
   }); //Клик по игровому полю
@@ -75,6 +80,37 @@ const main = () => {
       }
     }
   });
+}
+
+
+
+const startLevel = (level, allLevels, allColors) => { //Начинаем уровень
+  const side = allLevels[level].side;
+  const colors = allLevels[level].colors; //Получаем настройки уровня
+  let levelInfo = {
+    'gameItems': [],
+    'stepsCount': 0,
+    'colorSelected': allColors[getRandomInt(1, colors) - 1], //Сгенирировали изначальный выбранный цвет
+    'levelTimerId': 0,
+    'timeStart': 0,
+  }; //Информация об уровне
+
+
+  levelInfo.gameItems = createGameField(side, colors, allColors); //Создали поле
+  levelInfo.stepsCount = getStepsCount(levelInfo.gameItems); //Получили кол-во ходов
+
+  paintGameField(levelInfo.gameItems); //Нарисовали поле
+
+  paintColorSelection(allColors, colors); //Русием панель для выбора цвета
+  changeColorSelected(levelInfo.colorSelected); //Отмечаем выбранный цвет
+
+  document.getElementById('htmlLevelNumber').innerHTML = level + 1; //Вывели в span номер уровня
+  document.getElementById('htmlStepsCount').innerHTML = levelInfo.stepsCount; //Вывели в span кол-во ходов
+
+  levelInfo.timeStart = new Date(); //Время старта уровня
+  levelInfo.levelTimerId = setInterval(levelTimer, 1000, levelInfo.timeStart);
+
+  return levelInfo; //Вернули информацию об уровне
 }
 
 
@@ -129,6 +165,7 @@ const paintGameField = items => { //Функция для рисования п�
 
 
 const paintColorSelection = (colors, count) => { //Рисуем панель выбора цвета
+  document.getElementById('colorSelection').innerHTML = ''; //Очистили панель
   let div = document.createElement("div"); //Создаем div
   for (let i = 0; i < count; i++) {
     if (document.getElementById('noAnimationCheckbox').checked) { //Если режим без анимации
@@ -291,6 +328,20 @@ const levelTimer = timeStart => { //Функция для подсчета и в
   minutes = Math.floor(diffDate / 60); //Получаем кол-во минут, беря целую чать от деления секунды/60
   seconds = diffDate % 60; //Остаток от деления - секунды
   document.getElementById('htmlLevelTimer').innerHTML = minutes + ':' + seconds; //Вывели таймер на странциу
+}
+
+
+
+const getCountColorsOnLevel = gameItems => { //Функция для получения количества оставшихся цветов на уровне
+  let colors = []; //Использующиеся цвета
+  for (let i = 0; i < gameItems.length; i++) {
+    for (let j = 0; j < gameItems.length; j++) {
+      if (!colors.includes(gameItems[i][j])) { //Если этот цвет еще не находился
+        colors.push(gameItems[i][j]); //Добавляем его в массив colors
+      }
+    }
+  }
+  return colors.length; //Возвращаем количество цветов на уровне
 }
 
 
