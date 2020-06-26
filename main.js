@@ -7,6 +7,7 @@ const main = () => {
   let colorSelected = levelInfo.colorSelected; //Получили выбранный цвет для игры
   let timeStart = levelInfo.timeStart; //Время начала уровня
   let levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
+  let timeDump = 0; //Сохранение результата таймера для паузы
 
 
   document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
@@ -78,6 +79,25 @@ const main = () => {
         attribute = attribute.substr(1);
         colorSelectors[i].setAttribute('class', attribute); //Добавили классы элементу
       }
+    }
+  });
+
+  document.getElementById('pauseCheckbox').addEventListener('change', event => { //Сливили клик по чекбоксу с паузой
+    const checkbox = event.target; //Получили наш чекбокс
+
+    if (checkbox.checked) { //Если чекбокс отмечен, ставим паузу
+      console.log('Вырубаем таймер');
+      timeDump = new Date() - timeStart; //Сохранили время на уровне
+      clearInterval(levelTimerId); //Остановили таймер
+      document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
+      document.getElementById('gameField').appendChild(document.getElementById('pauseBlock')); //Отобразили блок паузы
+    }
+
+    if (!checkbox.checked) { //Если чекбокс не отмечен, возобнавляем игру
+      timeStart = new Date() - timeDump; //Получаем текущую дату и "добавляем" время которое уже провели на уровне
+      levelTimerId = setInterval(levelTimer, 1000, timeStart); //Снова включаем таймер
+      document.getElementById('other').appendChild(document.getElementById('pauseBlock')); //Скрыли блок паузы, вернув в скрытый other
+      paintGameField(gameItems); //Нарисовали поле
     }
   });
 }

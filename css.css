@@ -48,6 +48,20 @@ p {
   margin-top: 100px;
 }
 
+#other {
+  display: none;
+}
+
+#pauseBlock {
+  background: rgba(0,0,0,0.66);
+  width: 400px;
+  height: 300px;
+  text-align: center;
+  font-size: 200px;
+  font-weight: 900;
+  color: #ccc;
+}
+
 .gameItem {
   height: 60px;
   width: 60px;
