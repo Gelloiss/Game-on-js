@@ -40,6 +40,15 @@ const main = () => {
 
           document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
         }
+
+        if(countColorsOnLevel > 1 && stepsCount == 0) { //Если ходы закончились, а поле еще не закрашено, конец игры
+          showTop10(); //Покзали топ10 и скрыли боковые блоки
+          score = score - Math.floor((new Date() - timeStart) / 3 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
+          clearInterval(levelTimerId); //Остановили таймер
+          document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
+          document.getElementById('gameField').appendChild(document.getElementById('finishBlock')); //Отобразили форму конца игры
+          document.getElementById('finishScore').innerText = score; //Вывели очки в окно конца игры
+        }
       }
     }
   }); //Клик по игровому полю
@@ -86,7 +95,6 @@ const main = () => {
     const checkbox = event.target; //Получили наш чекбокс
 
     if (checkbox.checked) { //Если чекбокс отмечен, ставим паузу
-      console.log('Вырубаем таймер');
       timeDump = new Date() - timeStart; //Сохранили время на уровне
       clearInterval(levelTimerId); //Остановили таймер
       document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
@@ -99,6 +107,20 @@ const main = () => {
       document.getElementById('other').appendChild(document.getElementById('pauseBlock')); //Скрыли блок паузы, вернув в скрытый other
       paintGameField(gameItems); //Нарисовали поле
     }
+  });
+
+  document.getElementById('finishNewGameButton').addEventListener('click', () => { //Клик по кнопке начать новый уровень
+    hideTop10(); //Скрыли топ10 и показали боковые блоки
+    document.getElementById('other').appendChild(document.getElementById('finishBlock')); //Скрыли блок с финишем
+    level = 0; //Обнулили уровень
+    score = 0; //Обнулили очки
+    levelInfo = startLevel(level, allLevels, allColors); //Начали первый уроверь и получили элементы поля
+    gameItems = levelInfo.gameItems; //Получили элементы уровня
+    stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
+    colorSelected = levelInfo.colorSelected; //Получили выбранный цвет для игры
+    timeStart = levelInfo.timeStart; //Время начала уровня
+    levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
+    document.getElementById('htmlScoresCount').innerHTML = score; //Обнулили выведенные очки
   });
 }
 
@@ -362,6 +384,22 @@ const getCountColorsOnLevel = gameItems => { //Функция для получ�
     }
   }
   return colors.length; //Возвращаем количество цветов на уровне
+}
+
+
+
+const showTop10 = () => { //Показываем блок топ10 и скрываем остальные боковые
+  document.getElementById('info').setAttribute('style', 'display:none');
+  document.getElementById('colorSelection').setAttribute('style', 'display:none'); //Скрыли боковые блоки
+  document.body.appendChild(document.getElementById('top10')); //Отобразили блок топ10
+}
+
+
+
+const hideTop10 = () => { //Скрываем блок топ10 и показываем остальные боковые
+  document.getElementById('info').removeAttribute('style');
+  document.getElementById('colorSelection').removeAttribute('style'); //Отобразили боковые
+  document.getElementById('other').appendChild(document.getElementById('top10')); //Скрыли топ10
 }
 
 
