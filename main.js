@@ -1,20 +1,33 @@
-const main = () => {  
+const main = () => {
   let level = 0;
   let score = 0;
-  let levelInfo = startLevel(level, allLevels, allColors); //Начали первый уроверь и получили элементы поля
-  let gameItems = levelInfo.gameItems; //Получили элементы уровня
-  let stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
-  let colorSelected = levelInfo.colorSelected; //Получили выбранный цвет для игры
-  let timeStart = levelInfo.timeStart; //Время начала уровня
-  let levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
+  let levelInfo = {}; //Начали первый уроверь и получили элементы поля
+  let gameItems = []; //Получили элементы уровня
+  let stepsCount = 0; //Получили количество ходов на уровень
+  let colorSelected = {}; //Получили выбранный цвет для игры
+  let timeStart = 0; //Время начала уровня
+  let levelTimerId = 0; //id функции SetInterval
   let timeDump = 0; //Сохранение результата таймера для паузы
 
+  document.getElementById('startGameButton').addEventListener('click', () => { //Начинаем игру после нажатия кнопки старт
+    document.getElementById('other').appendChild(document.getElementById('startMenu')); //Скрыли поле старта
+    hideTop10(); //Скрыли топ10 и отобразлись инфо и выбор цвета
+    levelInfo = startLevel(level, allLevels, allColors); //Начали первый уроверь и получили элементы поля
+    gameItems = levelInfo.gameItems; //Получили элементы уровня
+    stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
+    colorSelected = levelInfo.colorSelected; //Получили выбранный цвет для игры
+    timeStart = levelInfo.timeStart; //Время начала уровня
+    levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
 
-  document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
+    document.getElementById('htmlScoresCount').innerHTML = score; //Вывели в span кол-во очков
+  });
 
   document.getElementById('gameField').addEventListener('click', event => { //Словили клик по игровому полю
     const target = event.target;
     if (target.getAttribute('class')) { //Если есть класс
+      if (!target.getAttribute('class').includes('gameItem')) { //Если не клик не по игровому элементу, завершаем функцию
+        return 0;
+      } //Да, костыль. Но я учусь. Стоило бы переписать чуток, а то структура в целом слегка говно
       const row = target.getAttribute('position').split('|')[0]; //Строка элемента по которому был клик
       const column = target.getAttribute('position').split('|')[1]; //Столбец элемента по которому был клик
       const color = target.getAttribute('class').split(' ')[1]; //Цвет элемента по которому был клик
@@ -73,7 +86,7 @@ const main = () => {
       }
     }
 
-    else { //Если сняли галочку
+    else { //Если сняли галочку c переключения анимации
       for (let i = 0; i < paintedGameItems.length; i++) { //Убрали у всех элементов класс
         paintedGameItems[i].setAttribute('class', paintedGameItems[i].getAttribute('class').split(' ')[0] + ' ' + paintedGameItems[i].getAttribute('class').split(' ')[1]);
       }
@@ -94,14 +107,15 @@ const main = () => {
   document.getElementById('pauseCheckbox').addEventListener('change', event => { //Сливили клик по чекбоксу с паузой
     const checkbox = event.target; //Получили наш чекбокс
 
-    if (checkbox.checked) { //Если чекбокс отмечен, ставим паузу
+    if (checkbox.checked || (!checkbox.checked && timeDump == 0)) { //Если чекбокс отмечен, ставим паузу или если он был отмечен с самого начала (нету времени предыдущего таймера)
+      checkbox.checked = true; //Отсавляем чекбокс чекнутым
       timeDump = new Date() - timeStart; //Сохранили время на уровне
       clearInterval(levelTimerId); //Остановили таймер
       document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
       document.getElementById('gameField').appendChild(document.getElementById('pauseBlock')); //Отобразили блок паузы
     }
 
-    if (!checkbox.checked) { //Если чекбокс не отмечен, возобнавляем игру
+    if (!checkbox.checked && timeDump > 0) { //Если чекбокс не отмечен, возобнавляем игру и сохраненное время больше 0
       timeStart = new Date() - timeDump; //Получаем текущую дату и "добавляем" время которое уже провели на уровне
       levelTimerId = setInterval(levelTimer, 1000, timeStart); //Снова включаем таймер
       document.getElementById('other').appendChild(document.getElementById('pauseBlock')); //Скрыли блок паузы, вернув в скрытый other

@@ -99,10 +99,10 @@ p {
   font-size: 30px;
 }
 
-#finishBlock {
+#finishBlock, #startMenu {
   background: rgba(0,0,0,0.66);
   width: 400px;
-  height: 300px;
+  min-height: 300px;
   text-align: center;
   font-size: 20px;
   font-weight: 900;
@@ -122,15 +122,18 @@ p {
   width: 250px;
 }
 
-#finishButton, #finishNewGameButton{
+.button {
   font-size: 20px;
   padding: 5px 15px;
   border: none;
   width: 250px;
   background: rgba(255, 255, 255, 0.45);
+  color: #000;
+  text-decoration: none;
+  margin: 10px;
 }
 
-#finishButton:hover, #finishNewGameButton:hover {
+.button:hover {
   cursor: pointer;
   background: rgba(255, 255, 255, 0.9);
 }
