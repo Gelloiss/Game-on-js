@@ -36,17 +36,25 @@ const main = () => {
         //gameItems = tryStep;
         stepsCount--; //Уменьшаем кол-во оставшихся ходов
         document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
-        score += (level + 1) * tryStep.countReplace; //Пересчитали кол-во очков
+        score += Math.ceil(((level + 1) / 10 + 1) * tryStep.countReplace); //Пересчитали кол-во очков
         document.getElementById('htmlScoresCount').innerHTML = score; //Вывели кол-во очков
         paintGameField(tryStep.items); //Нарисовали поле
+
         let countColorsOnLevel = getCountColorsOnLevel(gameItems); //Получили оставшееся количество цветов на уровне
+
         if (countColorsOnLevel == 1) { //Если остался только один цвет (уровень пройден)
           level++; //Увеличиваем уровень
-          score = score - Math.floor((new Date() - timeStart) / 3 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
+          score = score - Math.ceil((new Date() - timeStart) / 2.4 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
           clearInterval(levelTimerId); //Остановили таймер уровня
           levelInfo = startLevel(level, allLevels, allColors); //Начали начинаем новый уровень
           gameItems = levelInfo.gameItems; //Получили элементы уровня
-          stepsCount = levelInfo.stepsCount; //Получили количество ходов на уровень
+          if (level <= 4) { //С 1 по 5 уровни
+            stepsCount += levelInfo.stepsCount; //Получили количество ходов на уровень
+          }
+          if (level > 4 && level < allLevels.length) { //Если больше, чем кол-во уровней в конфиге, новые шаги не выдаем
+            stepsCount += Math.floor(levelInfo.stepsCount * (1.4 - level / 10)); //Получили количество ходов на уровень
+          }
+          document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
           colorSelected = levelInfo.colorSelected; //Выбранный цвет для игры
           timeStart = levelInfo.timeStart; //Время начала уровня
           levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
@@ -56,7 +64,7 @@ const main = () => {
 
         if(countColorsOnLevel > 1 && stepsCount == 0) { //Если ходы закончились, а поле еще не закрашено, конец игры
           showTop10(); //Покзали топ10 и скрыли боковые блоки
-          score = score - Math.floor((new Date() - timeStart) / 3 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
+          score = score - Math.ceil((new Date() - timeStart) / 2.4 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
           clearInterval(levelTimerId); //Остановили таймер
           document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
           document.getElementById('gameField').appendChild(document.getElementById('finishBlock')); //Отобразили форму конца игры
@@ -141,6 +149,9 @@ const main = () => {
 
 
 const startLevel = (level, allLevels, allColors) => { //Начинаем уровень
+  if (level >= allLevels.length) { //Если уровень за рамками уровней из конфига, берем настройки последнего уровня
+    level = allLevels.length - 1;
+  }
   const side = allLevels[level].side;
   const colors = allLevels[level].colors; //Получаем настройки уровня
   let levelInfo = {
