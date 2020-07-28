@@ -401,10 +401,11 @@ const step = (items, row, column, colorOriginal, color, stack = [], countReplace
 
 const changeColorSelected = item => {
   const colorSelected = document.getElementsByClassName("colorSelected"); //Получили выбранный цвет
+  document.getElementsByTagName('html')[0].setAttribute('class', item+'Cursor'); //Поменяли курсор на выбранный цвет
   if (colorSelected.length > 0) { //Если такой есть
     colorSelected[0].setAttribute('class', colorSelected[0].getAttribute('class').replace('colorSelected', '')); //Убрали старый выбранный цвет
   }
-  let attribute = 'colorSelector ' + item + ' colorSelected';
+  let attribute = 'colorSelector ' + item + ' colorSelected'; //Добавили класс новому выбранному цвету
   if (document.getElementById('noAnimationCheckbox').checked) { //Если режим без анимации
     attribute = 'colorSelector ' + item + ' itemNoAnimation colorSelected';
   }
@@ -460,6 +461,7 @@ const getTop10 = async () => { //Получаем топ10 из БД
     method: 'GET'
   }); //Выполнили запрос на файл обработчик
   const result = await query.json(); //Получили ответ
+
 
   const oldElements = document.querySelectorAll('.top10Item');
   const count = oldElements.length;

@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   background-image: url('img/bg.jpg');
   background-position: 50% 60%;
@@ -228,7 +232,7 @@ p {
 }
 
 .itemGreen {
-  background: #32CD32;
+  background: #1b8c1b
   box-shadow: 0 -15px 20px -15px #98FB98 inset,
               0 -15px 20px -15px #00FA9A inset,
               0 -15px 20px -15px #00FF7F inset;
@@ -296,7 +300,7 @@ p {
 }
 
 .itemLime {
-  background: #00FF00;
+  background: #50FF50;
   box-shadow: 0 -15px 20px -15px #7FFF00 inset,
               0 -15px 20px -15px #7CFC00 inset,
               0 -15px 20px -15px #32CD32 inset;
@@ -342,3 +346,41 @@ p {
 hr {
   width: 100%;
 }
+
+/*CURSORS*/
+.itemRedCursor {
+  cursor: url("img/cur/Red.cur"), default;
+}
+
+.itemBlueCursor {
+  cursor: url("img/cur/Blue.cur"), default;
+}
+
+.itemGreenCursor {
+  cursor: url("img/cur/Green.cur"), default;
+}
+
+.itemYellowCursor {
+  cursor: url("img/cur/Yellow.cur"), default;
+}
+
+.itemPurpleCursor {
+  cursor: url("img/cur/Purple.cur"), default;
+}
+
+.itemOrangeCursor {
+  cursor: url("img/cur/Orange.cur"), default;
+}
+
+.itemLimeCursor {
+  cursor: url("img/cur/Lime.cur"), default;
+}
+
+.itemBrownCursor {
+  cursor: url("img/cur/Brown.cur"), default;
+}
+
+.itemTransparentCursor {
+  cursor: url("img/cur/Transparent.cur"), default;
+}
+/*CURSORS*/
