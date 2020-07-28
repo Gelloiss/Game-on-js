@@ -9,6 +9,7 @@ const main = () => {
   let levelTimerId = 0; //id функции SetInterval
   let timeDump = 0; //Сохранение результата таймера для паузы
 
+  getTop10(); //Выводим рейтинг
   document.getElementById('startGameButton').addEventListener('click', () => { //Начинаем игру после нажатия кнопки старт
     document.getElementById('other').appendChild(document.getElementById('startMenu')); //Скрыли поле старта
     hideTop10(); //Скрыли топ10 и отобразлись инфо и выбор цвета
@@ -438,6 +439,7 @@ const getCountColorsOnLevel = gameItems => { //Функция для получ�
 
 
 const showTop10 = () => { //Показываем блок топ10 и скрываем остальные боковые
+  getTop10();
   document.getElementById('info').setAttribute('style', 'display:none');
   document.getElementById('colorSelection').setAttribute('style', 'display:none'); //Скрыли боковые блоки
   document.body.appendChild(document.getElementById('top10')); //Отобразили блок топ10
@@ -449,6 +451,33 @@ const hideTop10 = () => { //Скрываем блок топ10 и показыв
   document.getElementById('info').removeAttribute('style');
   document.getElementById('colorSelection').removeAttribute('style'); //Отобразили боковые
   document.getElementById('other').appendChild(document.getElementById('top10')); //Скрыли топ10
+}
+
+
+
+const getTop10 = async () => { //Получаем топ10 из БД
+  const query = await fetch('getRating.php', {
+    method: 'GET'
+  }); //Выполнили запрос на файл обработчик
+  const result = await query.json(); //Получили ответ
+
+  const oldElements = document.querySelectorAll('.top10Item');
+  const count = oldElements.length;
+  for (i = 2; i < count; i++) { //Идем по старым элементам топ10 и удаляем их
+    oldElements[i].remove();
+  }
+
+  let div = document.createElement('div'); //Создали div
+  for (i = 0; i < result.length; i++) {
+    div = document.createElement('div'); //Создали div
+    div.setAttribute('class', 'top10Item'); //Добавили класс
+    div.innerHTML = result[i]['name']; //Записали имя с рейтинга
+    document.getElementById('top10').appendChild(div); //Добавили этот div
+    div = document.createElement('div'); //Создали div
+    div.setAttribute('class', 'top10Item'); //Добавили класс
+    div.innerHTML = result[i]['score']; //Записали очки с рейтинга
+    document.getElementById('top10').appendChild(div); //Добавили этот div
+  }
 }
 
 
