@@ -56,3 +56,10 @@ const allLevels = [
     'colors': 9,
   },
 ]; //Все уровни
+
+
+var onloadCallback = function() {
+  grecaptcha.render('google_captcha', {
+    'sitekey' : '6LeMMbcZAAAAAIgppEqZO0GVVB6PRs7g4TxHfMgX'
+  });
+}; //Google captacha

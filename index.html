@@ -52,14 +52,19 @@
     <div id="pauseBlock">|  |</div>
 
     <div id="finishBlock">
-      Благодарим за игру! <br/>
-      Набрано очков: <span id="finishScore"></span><br/>
-      <input type="text" id="finishInputName" placeholder="Введите имя или ник"><br/>
-      <button class="button" id="finishButton">Сохранить статистику</button><br/><br/>
+      <div id="finishForm">
+        Благодарим за игру! <br/>
+        Набрано очков: <span id="finishScore"></span><br/>
+        <span id="finishMessage"></span>
+        <div id="google_captcha"></div>
+        <input type="text" id="finishInputName" placeholder="Введите имя или ник"><br/>
+        <button class="button" id="finishButton">Сохранить статистику</button><br/><br/>
+      </div>
       <button class="button" id="finishNewGameButton">Сыграть еще раз</button>
     </div>
   </div>
 </body>
 
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 <script type="text/javascript" src="main.js"></script>
 <script type="text/javascript" src="config.js"></script>

@@ -68,7 +68,7 @@ const main = () => {
           clearInterval(levelTimerId); //Остановили таймер
           document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
           document.getElementById('gameField').appendChild(document.getElementById('finishBlock')); //Отобразили форму конца игры
-          document.getElementById('finishScore').innerText = score; //Вывели очки в окно конца игры
+          document.getElementById('finishScore').innerText = score; //Вывели очки в окно конца игрыfinishNewGameButton
         }
       }
     }
@@ -143,6 +143,30 @@ const main = () => {
     timeStart = levelInfo.timeStart; //Время начала уровня
     levelTimerId = levelInfo.levelTimerId; //id функции SetInterval
     document.getElementById('htmlScoresCount').innerHTML = score; //Обнулили выведенные очки
+  });
+
+  document.getElementById('finishButton').addEventListener('click', async () => { //Клик по кнопке сохранения очков
+    const name = document.getElementById('finishInputName').value; //Ник
+    const captcha = document.getElementById('g-recaptcha-response').value; //Результат капчи
+    if (name.length < 3) {
+      document.getElementById('finishMessage').innerHTML = 'Слишком короткое имя<br/>';
+      return 0;
+    }
+    if (captcha == '') {
+      document.getElementById('finishMessage').innerHTML = 'Вы не прошли капчу!<br/>';
+      return 0;
+    }
+    const query = await fetch('saveResult.php', {
+      method: 'POST',
+      body: JSON.stringify({'name': name, 'captcha': captcha, 'score': score}),
+    });
+    const result = await query.json();
+    if (result.ok = true) { //Результат сохранен
+      document.getElementById('finishForm').innerHTML = 'Результат успешно сохранен!<br/>';
+    }
+    else {
+      document.getElementById('finishMessage').innerHTML = 'Вы не прошли капчу!<br/>';
+    }
   });
 }
 
