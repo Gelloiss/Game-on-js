@@ -58,6 +58,12 @@ const allLevels = [
 ]; //Все уровни
 
 
+const audioEffects = {
+  winLevel: new Audio('sound/WinBattle.mp3'),
+  loseLevel: new Audio('sound/LoseCombat.mp3')
+}; //Загружаем аудио в фоне
+
+
 var onloadCallback = function() {
   grecaptcha.render('google_captcha', {
     'sitekey' : '6LeMMbcZAAAAAIgppEqZO0GVVB6PRs7g4TxHfMgX'

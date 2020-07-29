@@ -9,6 +9,7 @@ const main = () => {
   let levelTimerId = 0; //id функции SetInterval
   let timeDump = 0; //Сохранение результата таймера для паузы
 
+
   getTop10(); //Выводим рейтинг
   document.getElementById('startGameButton').addEventListener('click', () => { //Начинаем игру после нажатия кнопки старт
     document.getElementById('other').appendChild(document.getElementById('startMenu')); //Скрыли поле старта
@@ -44,6 +45,9 @@ const main = () => {
         let countColorsOnLevel = getCountColorsOnLevel(gameItems); //Получили оставшееся количество цветов на уровне
 
         if (countColorsOnLevel == 1) { //Если остался только один цвет (уровень пройден)
+          if (audioEffects.winLevel.readyState != 0) { //Если звук победы загружен
+            audioEffects.winLevel.play(); //Включам его
+          }
           level++; //Увеличиваем уровень
           score = score - Math.ceil((new Date() - timeStart) / 2.4 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
           clearInterval(levelTimerId); //Остановили таймер уровня
@@ -64,6 +68,9 @@ const main = () => {
         }
 
         if(countColorsOnLevel > 1 && stepsCount == 0) { //Если ходы закончились, а поле еще не закрашено, конец игры
+          if (audioEffects.loseLevel.readyState != 0) { //Если звук проигрыша загружен
+            audioEffects.loseLevel.play(); //Включаем его
+          }
           showTop10(); //Покзали топ10 и скрыли боковые блоки
           score = score - Math.ceil((new Date() - timeStart) / 2.4 / 1000);// Отняли очки: кол-во секунд потраченных на уровне деленные на 3
           clearInterval(levelTimerId); //Остановили таймер

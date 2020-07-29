@@ -232,7 +232,7 @@ p {
 }
 
 .itemGreen {
-  background: #1b8c1b
+  background: #1b8c1b;
   box-shadow: 0 -15px 20px -15px #98FB98 inset,
               0 -15px 20px -15px #00FA9A inset,
               0 -15px 20px -15px #00FF7F inset;
