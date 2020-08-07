@@ -2,7 +2,7 @@
 $count = 10;
 $result = [];
 include 'db.php';
-$rating = $mysqli->query("SELECT `name`, `score` FROM `rating` ORDER BY `score` LIMIT {$count}");
+$rating = $mysqli->query("SELECT `name`, `score` FROM `rating` ORDER BY `score` DESC LIMIT {$count}");
 while ($row = $rating->fetch_assoc()) {
   $result[] = [
     'name' => $row['name'],

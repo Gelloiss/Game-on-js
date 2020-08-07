@@ -8,7 +8,8 @@ const main = () => {
   let timeStart = 0; //Время начала уровня
   let levelTimerId = 0; //id функции SetInterval
   let timeDump = 0; //Сохранение результата таймера для паузы
-
+  let sourceLanguage = document.getElementById('languageSelect').value; //Получили выбранный язык
+  setLanguage(sourceLanguage); //Вывели надписи и тексты
 
   getTop10(); //Выводим рейтинг
   document.getElementById('startGameButton').addEventListener('click', () => { //Начинаем игру после нажатия кнопки старт
@@ -57,7 +58,7 @@ const main = () => {
             stepsCount += levelInfo.stepsCount; //Получили количество ходов на уровень
           }
           if (level > 4 && level < allLevels.length) { //Если больше, чем кол-во уровней в конфиге, новые шаги не выдаем
-            stepsCount += Math.floor(levelInfo.stepsCount * (1.4 - level / 10)); //Получили количество ходов на уровень
+            stepsCount += Math.floor(levelInfo.stepsCount * (1.1 - level / 10)); //Получили количество ходов на уровень
           }
           document.getElementById('htmlStepsCount').innerHTML = stepsCount; //Вывели в span кол-во ходов
           colorSelected = levelInfo.colorSelected; //Выбранный цвет для игры
@@ -76,7 +77,7 @@ const main = () => {
           clearInterval(levelTimerId); //Остановили таймер
           document.getElementById('gameField').innerHTML = ''; //Очистили игровое поле
           document.getElementById('gameField').appendChild(document.getElementById('finishBlock')); //Отобразили форму конца игры
-          document.getElementById('finishScore').innerText = score; //Вывели очки в окно конца игрыfinishNewGameButton
+          document.getElementById('finishScore').innerText = score; //Вывели очки в окно конца игры finishNewGameButton
         }
       }
     }
@@ -156,25 +157,34 @@ const main = () => {
   document.getElementById('finishButton').addEventListener('click', async () => { //Клик по кнопке сохранения очков
     const name = document.getElementById('finishInputName').value; //Ник
     const captcha = document.getElementById('g-recaptcha-response').value; //Результат капчи
+    let query = await fetch(sourceLanguage, {
+      method: 'GET'
+    }); //Обращаемся к файлу с язком
+    const language = await query.json(); //Получили и декодировали ответ
     if (name.length < 3) {
-      document.getElementById('finishMessage').innerHTML = 'Слишком короткое имя<br/>';
+      document.getElementById('finishMessage').innerHTML = language.shortNameError;
       return 0;
     }
     if (captcha == '') {
-      document.getElementById('finishMessage').innerHTML = 'Вы не прошли капчу!<br/>';
+      document.getElementById('finishMessage').innerHTML = language.captchaError;
       return 0;
     }
-    const query = await fetch('saveResult.php', {
+    query = await fetch('saveResult.php', {
       method: 'POST',
       body: JSON.stringify({'name': name, 'captcha': captcha, 'score': score}),
     });
     const result = await query.json();
     if (result.ok = true) { //Результат сохранен
-      document.getElementById('finishForm').innerHTML = 'Результат успешно сохранен!<br/>';
+      document.getElementById('finishForm').innerHTML = language.successSendResult;
     }
     else {
-      document.getElementById('finishMessage').innerHTML = 'Вы не прошли капчу!<br/>';
+      document.getElementById('finishMessage').innerHTML = language.captchaError;
     }
+  });
+
+  document.getElementById('languageSelect').addEventListener('change', e => { //Сменили язык
+    sourceLanguage = e.target.value;; //Получили выбранный язык
+    setLanguage(sourceLanguage); //Вывели надписи и тексты
   });
 }
 
@@ -450,7 +460,7 @@ const showTop10 = () => { //Показываем блок топ10 и скрыв
   getTop10();
   document.getElementById('info').setAttribute('style', 'display:none');
   document.getElementById('colorSelection').setAttribute('style', 'display:none'); //Скрыли боковые блоки
-  document.body.appendChild(document.getElementById('top10')); //Отобразили блок топ10
+  document.getElementsByClassName('main')[0].appendChild(document.getElementById('top10')); //Отобразили блок топ10
 }
 
 
@@ -487,6 +497,36 @@ const getTop10 = async () => { //Получаем топ10 из БД
     div.innerHTML = result[i]['score']; //Записали очки с рейтинга
     document.getElementById('top10').appendChild(div); //Добавили этот div
   }
+}
+
+
+
+const setLanguage = async source => { //Устаналиваем язык
+  const query = await fetch(source, {
+    method: 'GET'
+  }); //Обращаемся к файлу с язком
+  const language = await query.json(); //Получили и декодировали ответ
+  /*Записываем нужно содержимое*/
+  document.title = language.siteName;
+  document.getElementById('textNoAnimation').innerHTML = language.noAnimation;
+  document.getElementById('textLevel').innerHTML = language.level;
+  document.getElementById('textStepsCount').innerHTML = language.stepsCount;
+  document.getElementById('textScoresCount').innerHTML = language.scoresCount;
+  document.getElementById('textLevelTimer').innerHTML = language.levelTimer;
+  document.getElementById('textPause').innerHTML = language.pause;
+  document.getElementById('textDescriptionGame').innerHTML = language.descriptionGame;
+  document.getElementById('startGameButton').innerHTML = language.startGame;
+  document.getElementById('textLinkGit').innerHTML = language.linkGit;
+  document.getElementById('textLinkAuthor').innerHTML = language.linkAuthor;
+  document.getElementById('textTop10').innerHTML = language.top10;
+  document.getElementById('textTop10Name').innerHTML = language.top10Name;
+  document.getElementById('textTop10Score').innerHTML = language.top10Score;
+  document.getElementById('textThanksForGame').innerHTML = language.thanksForGame;
+  document.getElementById('textScoresFinishCount').innerHTML = language.scoresFinishCount;
+  document.getElementById('finishInputName').placeholder = language.placeholderName;
+  document.getElementById('finishButton').innerHTML = language.saveResult;
+  document.getElementById('finishNewGameButton').innerHTML = language.reGame;
+  document.getElementById('finishMessage').innerHTML = '';
 }
 
 

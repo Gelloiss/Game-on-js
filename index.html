@@ -1,56 +1,62 @@
 <head>
-  <title>Тест</title>
+  <title></title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="css.css?6">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 
 <body>
-  <div id="info" style="display: none;">
-    <p><label for="noAnimationCheckbox">Без анимаций</label> <input type="checkbox" id="noAnimationCheckbox" name="noAnimationCheckbox"></p>
-    <p>Уровень: <span id="htmlLevelNumber"></span></p>
-    <p>Осталось ходов: <span id="htmlStepsCount"></span></p>
-    <p>Набрано очков: <span id="htmlScoresCount"></span></p>
-    <p>Время на уровне: <span id="htmlLevelTimer"></span></p>
-    <p><label for="pauseCheckbox">Пауза</label> <input type="checkbox" id="pauseCheckbox" name="pauseCheckbox"></p>
+  <div id="languagePanel">
+    Language:
+    <select id="languageSelect">
+      <option value="languages/ru.json">Russian</option>
+      <option value="languages/en.json">English</option>
+    </select>
   </div>
-
-  <div id="gameField">
-    <div id="startMenu">
-      Описание игры.<br/>
-      Описание игры.<br/>
-      Описание игры.<br/>
-      Описание игры.<br/>
-      Описание игры.<br/>
-      Описание игры.<br/>
-      <button class="button" id="startGameButton">Начать игру</button><br/>
-      <a class="button" href="#">LINK</a>
+  <div class="main">
+    <div id="info" style="display: none;">
+      <p><label for="noAnimationCheckbox"><span id="textNoAnimation"></span></label> <input type="checkbox" id="noAnimationCheckbox" name="noAnimationCheckbox"></p>
+      <p><span id="textLevel"></span> <span id="htmlLevelNumber"></span></p>
+      <p><span id="textStepsCount"></span> <span id="htmlStepsCount"></span></p>
+      <p><span id="textScoresCount"></span> <span id="htmlScoresCount"></span></p>
+      <p><span id="textLevelTimer"></span> <span id="htmlLevelTimer"></span></p>
+      <p><label for="pauseCheckbox" id="textPause"></label> <input type="checkbox" id="pauseCheckbox" name="pauseCheckbox"></p>
     </div>
-  </div>
 
-  <div id="colorSelection" style="display: none;">
-
-  </div>
-
-  <div id="top10">
-    <div class="top10Title">ТОП 10</div>
-    <div class="flexToNewString"></div>
-    <div class="top10Item top10TableTitle">Имя</div> <div class="top10Item top10TableTitle">Очки</div>
-  </div>
-
-  <div id="other">
-
-    <div id="pauseBlock">|  |</div>
-
-    <div id="finishBlock">
-      <div id="finishForm">
-        Благодарим за игру! <br/>
-        Набрано очков: <span id="finishScore"></span><br/>
-        <span id="finishMessage"></span>
-        <div id="google_captcha"></div>
-        <input type="text" id="finishInputName" placeholder="Введите имя или ник"><br/>
-        <button class="button" id="finishButton">Сохранить статистику</button><br/><br/>
+    <div id="gameField">
+      <div id="startMenu">
+        <p id="textDescriptionGame"></p>
+        <button class="button" id="startGameButton"></button>
+        <a class="button" target="_blank" href="https://github.com/Gelloiss/Game-on-js" id="textLinkGit"></a>
+        <a class="button" target="_blank" href="https://yourcompany.best/" id="textLinkAuthor"></a>
       </div>
-      <button class="button" id="finishNewGameButton">Сыграть еще раз</button>
+    </div>
+
+    <div id="colorSelection" style="display: none;">
+
+    </div>
+
+    <div id="top10">
+      <div class="top10Title" id="textTop10"></div>
+      <div class="flexToNewString"></div>
+      <div class="top10Item top10TableTitle" id="textTop10Name"></div> <div class="top10Item top10TableTitle" id="textTop10Score"></div>
+    </div>
+
+    <div id="other">
+
+      <div id="pauseBlock">|  |</div>
+
+      <div id="finishBlock">
+        <div id="finishForm">
+          <span id="textThanksForGame"></span> <br/>
+          <span id="textScoresFinishCount"></span> <span id="finishScore"></span><br/>
+          <span id="finishMessage"></span>
+          <div id="google_captcha"></div>
+          <input type="text" id="finishInputName" placeholder=""><br/>
+          <button class="button" id="finishButton"></button><br/><br/>
+        </div>
+        <button class="button" id="finishNewGameButton"></button>
+      </div>
     </div>
   </div>
 </body>
