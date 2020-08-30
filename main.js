@@ -508,25 +508,15 @@ const setLanguage = async source => { //Устаналиваем язык
   const language = await query.json(); //Получили и декодировали ответ
   /*Записываем нужно содержимое*/
   document.title = language.siteName;
-  document.getElementById('textNoAnimation').innerHTML = language.noAnimation;
-  document.getElementById('textLevel').innerHTML = language.level;
-  document.getElementById('textStepsCount').innerHTML = language.stepsCount;
-  document.getElementById('textScoresCount').innerHTML = language.scoresCount;
-  document.getElementById('textLevelTimer').innerHTML = language.levelTimer;
-  document.getElementById('textPause').innerHTML = language.pause;
-  document.getElementById('textDescriptionGame').innerHTML = language.descriptionGame;
-  document.getElementById('startGameButton').innerHTML = language.startGame;
-  document.getElementById('textLinkGit').innerHTML = language.linkGit;
-  document.getElementById('textLinkAuthor').innerHTML = language.linkAuthor;
-  document.getElementById('textTop10').innerHTML = language.top10;
-  document.getElementById('textTop10Name').innerHTML = language.top10Name;
-  document.getElementById('textTop10Score').innerHTML = language.top10Score;
-  document.getElementById('textThanksForGame').innerHTML = language.thanksForGame;
-  document.getElementById('textScoresFinishCount').innerHTML = language.scoresFinishCount;
-  document.getElementById('finishInputName').placeholder = language.placeholderName;
-  document.getElementById('finishButton').innerHTML = language.saveResult;
-  document.getElementById('finishNewGameButton').innerHTML = language.reGame;
   document.getElementById('finishMessage').innerHTML = '';
+  document.getElementById('finishInputName').placeholder = language.finishInputName;
+
+  for (i in language) {
+    let element = document.getElementById(i);
+    if (element) {
+      element.innerHTML = language[i];
+    }
+  }
 }
 
 
